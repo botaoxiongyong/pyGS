@@ -17,8 +17,8 @@ PL-2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.032365	0.094076 ......
 .
 '''
 #get the x y values from data file
-path = '/home/jiabo/google_drive/硕士资料/普鲁/粒度2/'  #文件路径
-sample = '分粒级'          #文件名
+path = '/home/jiabo/google_drive/硕士资料/兰大/'  #文件路径
+sample = 'liuhao_grainsize.dat'          #文件名
 
 l = []
 with open(path + sample) as dat:
@@ -26,8 +26,8 @@ with open(path + sample) as dat:
     for lines in data:
         var = lines.split()
         l.append(var)
-print l[2][0]
-smaplenum = str(l[1][0])                    #样品号
+print l[50][0]
+smaplenum = str(l[50][0])                    #样品号
 x = np.array(l[0], dtype=np.float64)        #粒级
 y = np.array(l[2][1:101], dtype=np.float64) #含量
 y_df = np.gradient(y)
@@ -76,13 +76,14 @@ def single(x_fit, para):
 
 
 #set x value and y value, using line space rather than log space
-x_fit = np.linspace(0.2, x.max(), 1000)
+x_fit = np.logspace(np.log10(0.1), np.log10(x.max()), 1000)
 y_t = interpolate.splrep(x, y)
 y_interp = interpolate.splev(x_fit, y_t)
 
+print x_fit
 #set initial value for least square caculating
-para = [1., 1, 1, 1., 1, 1, 7., 7, 7]
-plsqr = leastsq(residuals, para, args=(x_fit, y_interp), maxfev=10000)
+para = [1, 1, 1,1., 1, 1, 7, 3, 1] #[1., 1, 1, 1., 1, 1, 7., 7, 7] for pulu
+plsqr = leastsq(residuals, para, args=(x_fit, y_interp), maxfev=50000)
 plsq = plsqr[0]   #this is the result of the first value of initial value from scipy leastsq
 '''
 #plsq = ([5.65411684e-08,  1.01406847e-07,   7.23604702e-09,
@@ -93,18 +94,19 @@ para2 = [plsq[1], plsq[4], plsq[7]]
 para3 = [plsq[2], plsq[5], plsq[8]]
 print para
 '''
+print plsq
 #
 #give the value from scipy leastsq to second leastsq(lmfit) and set the arrange
 params = Parameters()
 params.add('p', value=abs(plsq[0]), min=10**-10)
 params.add('p1', value=abs(plsq[1]), min=10**-10)
 params.add('p2', value=abs(plsq[2]), min=10**-10)
-params.add('a', value=abs(plsq[3]), min=10**-1)
-params.add('a1', value=abs(plsq[4]), min=10**-1)
-params.add('a2', value=abs(plsq[5]), min=10**-1)
-params.add('b', value=abs(plsq[6]), min=10**-10)
-params.add('b1', value=abs(plsq[7]), min=10**-10)
-params.add('b2', value=abs(plsq[8]), min=10**-10)
+params.add('a', value=abs(plsq[3]), min=10**-2)
+params.add('a1', value=abs(plsq[4]), min=10**-2)
+params.add('a2', value=abs(plsq[5]), min=10**-2)
+params.add('b', value=abs(plsq[6]), min=40)
+params.add('b1', value=abs(plsq[7]), min=20)
+params.add('b2', value=abs(plsq[8]), min=1)
 #
 #using lmfit to get the final result without negtive values
 result = minimize(myresiduals, params, args=(x_fit, y_interp))
@@ -126,7 +128,7 @@ ax.set_xscale('log')
 ax.set_xlim(0.1, 1000)
 ax1 = fig.add_subplot(122)
 ax1.scatter(x, y, c='red')
-ax1.plot(x_fit, y_interp)
+#ax1.plot(x_fit, y_interp)
 ax1.plot(x_fit, myfunc(x_fit, result.params))
 ax1.set_xscale('log')
 ax1.set_xlim(0.1, 1000)
