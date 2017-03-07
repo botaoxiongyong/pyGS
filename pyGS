@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 '''
 this is a program for grain size fitting with weibull distribution
-
-
+author: Jiabo
+GFZ Potsdam
 '''
 
 import sys
