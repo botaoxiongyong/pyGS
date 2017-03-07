@@ -18,3 +18,6 @@ the required package list:
     PyQt5
     scipy
     
+runing:
+    
+    python3 pyGS.py
