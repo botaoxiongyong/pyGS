@@ -427,7 +427,7 @@ class Mainwindow(QMainWindow):
             print(str(e))
             pass
     def showDialog(self):
-        filename=QFileDialog.getOpenFileName(self,'open file','/home/Documents/python/pyGS')
+        filename=QFileDialog.getOpenFileName(self,'open file','/home/Documents/')
         if filename[0]:
             f = open(filename[0],'r')
             with f:
