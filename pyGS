@@ -76,7 +76,7 @@ class dataFit():
                 line = [lines.split() for lines in data]
             self.samplenumber = [str(i[0]) for i in line]#str(line[self.sampleIndex][0]) #sample_sequence=1
             self.x_measure = np.array(line[0], dtype=np.float64)
-            self.y_measure = np.array(line[self.sampleIndex][2:], dtype=np.float64)
+            self.y_measure = np.array(line[self.sampleIndex][1:], dtype=np.float64)
             self.x_logspace = np.logspace(np.log10(0.11), np.log10(self.x_measure.max()), 1000)
             self.y_fit = interpolate.splev(self.x_logspace, interpolate.splrep(self.x_measure, self.y_measure))
             self.x_fit = np.array([np.log10(i)+1 for i in self.x_logspace])
